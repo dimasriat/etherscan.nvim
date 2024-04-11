@@ -1,23 +1,41 @@
-local M = {}
+local Ui = require('evm.ui')
 
-function M.toggle_window(token_address)
-  -- local buf = vim.api.nvim_create_buf(false, true)
-  -- local win = vim.api.nvim_open_win(buf, true, {
-  --   relative = "editor",
-  --   width = 40,
-  --   height = 10,
-  --   row = 10,
-  --   col = 10,
-  --   style = "minimal",
-  -- })
+local Evm = {}
+Evm.__index = Evm
 
-  -- local lines = {
-  --     "Token Address:",
-  --       token_address,
-  -- }
-
-  -- vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-  print("Token Address: " .. token_address)
+function Evm:new()
+    local ui = Ui.new()
+    local opts = {
+        title = "Arbitrum",
+    }
+    local props = {
+        ui = ui,
+        opts = opts
+    }
+    local evm = setmetatable(props, self)
+    return evm
 end
 
-return M
+function Evm:toggle_ui(line)
+    local lines = {
+        line,
+        "",
+    }
+
+    self.ui:toggle_ui({
+        title = self.opts.title,
+        lines = lines,
+        height = #lines,
+    })
+
+    -- move cursor to the next line
+    vim.cmd('norm! G')
+end
+
+function Evm:setup(opts)
+    self.opts = vim.tbl_deep_extend("force", self.opts, opts)
+end
+
+local evm  = Evm:new()
+
+return evm
