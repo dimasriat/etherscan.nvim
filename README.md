@@ -1,1 +1,1 @@
-# etherscan.nvim
+# evm.nvim
